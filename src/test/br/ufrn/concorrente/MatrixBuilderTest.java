@@ -1,10 +1,12 @@
 package br.ufrn.concorrente;
 
-import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import java.util.ArrayList;
+
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.assertThat;
 
 public class MatrixBuilderTest {
 
@@ -19,30 +21,39 @@ public class MatrixBuilderTest {
     public void shouldReadAHeight() {
         String dimensionString = "5";
         int height = builder.withHeight(dimensionString);
-        assertThat(height, CoreMatchers.is(CoreMatchers.equalTo(5)));
-        assertThat(builder.getHeight(), CoreMatchers.is(CoreMatchers.equalTo(5)));
+        assertThat(height, is(equalTo(5)));
+        assertThat(builder.getHeight(), is(equalTo(5)));
     }
 
     @Test
     public void shouldReadAnWidth() {
         String dimensionString = "5";
         int width = builder.withWidth(dimensionString);
-        assertThat(width, CoreMatchers.is(CoreMatchers.equalTo(5)));
-        assertThat(builder.getWidth(), CoreMatchers.is(CoreMatchers.equalTo(5)));
+        assertThat(width, is(equalTo(5)));
+        assertThat(builder.getWidth(), is(equalTo(5)));
+    }
+
+    @Test
+    public void shouldReadHeightAndWidth() {
     }
 
     @Test
     public void shouldReadAnElement() {
         String elementString = "5";
         int currentElement = builder.readElement(elementString);
-        assertThat(currentElement, CoreMatchers.is(CoreMatchers.equalTo(5)));
+        assertThat(currentElement, is(equalTo(5)));
     }
 
+    /**
+     * Tem que garantir a presença dos elementos e a ordem correta
+     */
     @Test
     public void shouldReadALine() {
         String lineString = "3 5 1";
-        int elements[] = builder.readLine(lineString);
-        assertThat(elements[0], CoreMatchers.is(CoreMatchers.equalTo(3)));
-        //assertThat(elements[0], CoreMatchers.allOf(CoreMatchers.hasItems(3, 5, 1)));
+        ArrayList<Integer> elements = builder.readLine(lineString);
+        assertThat(elements, hasItems(3, 5, 1));
+        assertThat(elements.get(0), is(equalTo(3)));
+        assertThat(elements.get(1), is(equalTo(5)));
+        assertThat(elements.get(2), is(equalTo(1)));
     }
 }
