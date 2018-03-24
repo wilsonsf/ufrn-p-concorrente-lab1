@@ -7,7 +7,7 @@ import java.util.ArrayList;
  */
 public class MatrixBuilder {
 
-    private int lineCount = 0;
+    ArrayList<ArrayList<Integer> > lines = new ArrayList<>();
     private int height = 0;
     private int width = 0;
 
@@ -50,7 +50,7 @@ public class MatrixBuilder {
             line.add(value);
         }
 
-        lineCount++;
+        lines.add(line);
         return line;
     }
 
@@ -61,12 +61,12 @@ public class MatrixBuilder {
         if (height == 0)
             validationErrors += "\nNão foi informada a altura.";
 
-        if (lineCount != height)
+        if (lines.size() != height)
             validationErrors += "\nNão foram lidas todas as linhas da matriz.";
 
 
         if (validationErrors.isEmpty()) {
-            return new Matrix();
+            return new Matrix(lines);
         } else {
             throw new Exception(validationErrors);
         }
