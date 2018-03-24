@@ -3,12 +3,21 @@ package br.ufrn.concorrente;
 import java.util.ArrayList;
 
 /**
- * @author Wilson Farias, Jonathan Rocha
+ * @author Wilson Farias
  */
 public class MatrixBuilder {
 
+    private int lineCount = 0;
     private int height = 0;
     private int width = 0;
+
+    public void withHeightAndWidth(String dimensionsString) {
+        String[] dimensions = dimensionsString.split(" ");
+        if (dimensions.length == 2){
+            withHeight(dimensions[0]);
+            withWidth(dimensions[1]);
+        }
+    }
 
     public int withHeight(String height) {
         this.height = Integer.parseInt(height);
@@ -41,10 +50,27 @@ public class MatrixBuilder {
             line.add(value);
         }
 
+        lineCount++;
         return line;
     }
 
-    public Matrix build() {
-        return new Matrix();
+    public Matrix build() throws Exception {
+        String validationErrors = "";
+        if (width==0)
+            validationErrors += "\nNão foi informada a largura.";
+        if (height == 0)
+            validationErrors += "\nNão foi informada a altura.";
+
+        if (lineCount != height)
+            validationErrors += "\nNão foram lidas todas as linhas da matriz.";
+
+
+        if (validationErrors.isEmpty()) {
+            return new Matrix();
+        } else {
+            throw new Exception(validationErrors);
+        }
     }
+
+
 }
