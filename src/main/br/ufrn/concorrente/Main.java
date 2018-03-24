@@ -13,7 +13,7 @@ public class Main {
     private static int matrixSide;
     private static String multiplicationAlgorithm;
 
-    public static void main(String[] args) throws FileNotFoundException {
+    public static void main(String[] args) {
 
         if (args.length < 2) {
             System.out.println("ERROR: Not enough arguments to continue. Please insert two arguments.");
@@ -26,8 +26,14 @@ public class Main {
         // Impressao das informacoes sobre os argumentos passados por linha de comando
         System.out.println("Matrix side: " + matrixSide);
 
-        Matrix matrixA = readMatrixWithSide("A", matrixSide);
-        Matrix matrixB = readMatrixWithSide("B", matrixSide);
+        Matrix matrixA = null;
+        Matrix matrixB = null;
+        try {
+            matrixA = readMatrixWithSide("A", matrixSide);
+            matrixB = readMatrixWithSide("B", matrixSide);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
 
         if (multiplicationAlgorithm.equalsIgnoreCase("S")) {
             System.out.println("Algorithm to be used: sequential");
@@ -39,7 +45,12 @@ public class Main {
         }
 
         // FIXME: trocar para nome de arquivo de saída
-        PrintStream printStream = new PrintStream("out/Matrizes"+matrixSide+multiplicationAlgorithm+".txt");
+        PrintStream printStream = null;
+        try {
+            printStream = new PrintStream("out/Matrizes"+matrixSide+multiplicationAlgorithm+".txt");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
         printStream.println(matrixA);
         printStream.println(matrixB);
         printStream.close();
@@ -53,16 +64,11 @@ public class Main {
      * @return
      * @throws FileNotFoundException
      */
-    private static Matrix readMatrixWithSide(String name, int side) {
+    private static Matrix readMatrixWithSide(String name, int side) throws FileNotFoundException {
         MatrixBuilder builder = new MatrixBuilder();
         Scanner scanner;
 
-        try {
-            scanner = new Scanner(new FileInputStream(filePathName(name, side)));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            return null;
-        }
+        scanner = new Scanner(new FileInputStream(filePathName(name, side)));
 
         if (scanner.hasNextLine())
             builder.withHeightAndWidth(scanner.nextLine());

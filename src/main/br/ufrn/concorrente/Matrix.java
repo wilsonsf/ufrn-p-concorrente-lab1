@@ -1,73 +1,72 @@
 package br.ufrn.concorrente;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Jonathan Rocha
  */
 public class Matrix {
 
-    /**
-     * Atributos
-     */
-    private ArrayList<ArrayList<Integer>> elements;
+    /** Armazena os elementos da matriz para manipulação. */
+    private List<List<Integer>> elementsMatrix;
 
     /**
-     * Construtor
-     * @param elements
+     * Construtor da Matriz.
+     * @param elements matriz de elementos do tipo Integer
      */
-    public Matrix(ArrayList<ArrayList<Integer>> elements) {
-        this.elements = elements;
+    public Matrix(List<List<Integer>> elements) {
+        this.elementsMatrix = elements;
     }
 
     /**
-     * Retorna o lado da matriz
-     * @return
+     * Retorna o lado da matriz.
+     * @return retorna a ordem da matriz.
      */
     public int getSide() {
-        return elements.size();
+        return elementsMatrix.size();
     }
 
     /**
      * Retorna um elemento da matriz
-     * @param column
-     * @param line
-     * @return
+     * @param column coluna do elemento.
+     * @param line linha do elemento.
+     * @return o elemento que está na posição (linha, coluna).
      */
     public int getElement(int line, int column) {
-        return elements.get(line).get(column);
+        return elementsMatrix.get(line).get(column);
     }
 
     /**
      * Modifica um elemento da matriz
-     * @param line
-     * @param column
-     * @param value
+     * @param line linha do elemento a ser modificado
+     * @param column coluna do elemento a ser modificado
+     * @param value novo valor do elemento na coordenada (linha, coluna)
      */
     public void setElement(int line, int column, int value) {
-        elements.get(line).set(column, value);
+        elementsMatrix.get(line).set(column, value);
     }
 
     /**
-     * Retorna uma linha da matriz
-     * @param line
-     * @return
+     * Retorna uma linha da matriz.
+     * @param line número da linha da matriz, 0 a n-1
+     * @return retorna uma lista com os elementos da linha solicitada.
      */
-    public ArrayList<Integer> getLine(int line) {
-        return elements.get(line);
+    public List<Integer> getLine(int line) {
+        return elementsMatrix.get(line);
     }
 
     /**
-     * Retorna uma coluna da matriz
-     * @param column
-     * @return
+     * Retorna uma coluna da matriz.
+     * @param column número da coluna da matriz, 0 a n-1
+     * @return retorna uma lista com os elementos da coluna solicitada.
      */
-    public ArrayList<Integer> getColumn(int column) {
+    public List<Integer> getColumn(int column) {
 
-        ArrayList<Integer> columnToBeReturned = new ArrayList<Integer>();
+        ArrayList<Integer> columnToBeReturned = new ArrayList<>();
 
-        for (int i = 0; i < elements.size(); i++) {
-            columnToBeReturned.add(elements.get(i).get(column));
+        for (List<Integer> row : elementsMatrix) {
+            columnToBeReturned.add(row.get(column));
         }
 
         return columnToBeReturned;
@@ -75,19 +74,38 @@ public class Matrix {
 
     /**
      * Retorna toda a matriz
-     * @return
+     * @return retorna uma matriz dos elementos como uma Lista de uma Lista de Inteiros
      */
-    public ArrayList<ArrayList<Integer>> getAllElements() {
-        return elements;
+    @SuppressWarnings("unused")
+    public List<List<Integer>> getAllElements() {
+        return elementsMatrix;
     }
 
     /**
-     *
-     * @return
+     * Retorna uma Matriz imprimível como uma String.
+     * @return uma String representando o estado atual da matriz
      */
     @Override
     public String toString() {
-        //TODO: Implement this
-        return elements.toString();
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < elementsMatrix.size(); i++) {
+            for (int j = 0; j < elementsMatrix.size(); j++) {
+                builder.append(elementsMatrix.get(i).get(j));
+                if (j < elementsMatrix.size()-1)
+                    builder.append(" ");
+                else
+                    builder.append("\n");
+            }
+        }
+        return builder.toString();
+    }
+
+    /**
+     * Imprime a matriz atual na saída padrão do sistema (System.out).
+     * @deprecated forRemoval
+     */
+    @Deprecated(since = "2018/03/24", forRemoval = true)
+    public void print() {
+        System.out.println(toString());
     }
 }
