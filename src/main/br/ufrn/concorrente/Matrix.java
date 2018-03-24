@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Essa classe representa uma abstração do objeto Matriz e possui as operações
+ * elementares para criação, e leitura e atualização de elementos, bem como
+ * uma formatação do objeto para String.
  * @author Jonathan Rocha
  */
 public class Matrix {
@@ -28,7 +31,7 @@ public class Matrix {
     }
 
     /**
-     * Retorna um elemento da matriz
+     * Retorna um elemento da matriz.
      * @param column coluna do elemento.
      * @param line linha do elemento.
      * @return o elemento que está na posição (linha, coluna).
@@ -38,7 +41,7 @@ public class Matrix {
     }
 
     /**
-     * Modifica um elemento da matriz
+     * Modifica um elemento da matriz.
      * @param line linha do elemento a ser modificado
      * @param column coluna do elemento a ser modificado
      * @param value novo valor do elemento na coordenada (linha, coluna)
@@ -73,7 +76,7 @@ public class Matrix {
     }
 
     /**
-     * Retorna toda a matriz
+     * Retorna toda a matriz.
      * @return retorna uma matriz dos elementos como uma Lista de uma Lista de Inteiros
      */
     @SuppressWarnings("unused")
@@ -88,14 +91,12 @@ public class Matrix {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < elementsMatrix.size(); i++) {
-            for (int j = 0; j < elementsMatrix.size(); j++) {
-                builder.append(elementsMatrix.get(i).get(j));
-                if (j < elementsMatrix.size()-1)
-                    builder.append(" ");
-                else
-                    builder.append("\n");
+        for (List<Integer> row : elementsMatrix) {
+            for (Integer element : row) {
+                builder.append(element);
+                builder.append(" ");
             }
+            builder.setCharAt(builder.length()-1, '\n');
         }
         return builder.toString();
     }

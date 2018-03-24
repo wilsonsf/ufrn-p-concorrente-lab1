@@ -48,14 +48,22 @@ public class Main {
         PrintStream printStream = null;
         try {
             printStream = new PrintStream("out/Matrizes"+matrixSide+multiplicationAlgorithm+".txt");
+            printStream.println(matrixA);
+            printStream.println(matrixB);
+
+            Matrix matrixC = null;
+            if (multiplicationAlgorithm.equalsIgnoreCase("S"));
+                matrixC = MatrixUtil.multiplySequential(matrixA, matrixB);
+
+            printStream.println(matrixC);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+        } finally {
+            printStream.close();
         }
-        printStream.println(matrixA);
-        printStream.println(matrixB);
-        printStream.close();
 
-        threadTesting();
+
+//        threadTesting();
     }
 
     /**
@@ -96,6 +104,7 @@ public class Main {
         return "resources/"+matrix + side + "x" + side + ".txt";
     }
 
+    @Deprecated
     private static void threadTesting() {
         Thread thread = new Thread(() -> System.out.println("Thread imprimindo!"));
 
