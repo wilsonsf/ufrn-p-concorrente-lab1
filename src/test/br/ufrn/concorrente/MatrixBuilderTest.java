@@ -17,13 +17,17 @@ public class MatrixBuilderTest {
 
     @Test
     public void shouldReadAHeight() {
-        builder.withHeight(5);
+        String dimensionString = "5";
+        int height = builder.withHeight(dimensionString);
+        assertThat(height, CoreMatchers.is(CoreMatchers.equalTo(5)));
         assertThat(builder.getHeight(), CoreMatchers.is(CoreMatchers.equalTo(5)));
     }
 
     @Test
     public void shouldReadAnWidth() {
-        builder.withWidth(5);
+        String dimensionString = "5";
+        int width = builder.withWidth(dimensionString);
+        assertThat(width, CoreMatchers.is(CoreMatchers.equalTo(5)));
         assertThat(builder.getWidth(), CoreMatchers.is(CoreMatchers.equalTo(5)));
     }
 

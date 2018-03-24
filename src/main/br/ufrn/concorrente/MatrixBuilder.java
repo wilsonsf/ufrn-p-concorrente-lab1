@@ -5,16 +5,18 @@ public class MatrixBuilder {
     private int height = 0;
     private int width = 0;
 
-    public void withHeight(int height) {
-        this.height = height;
+    public int withHeight(String height) {
+        this.height = Integer.parseInt(height);
+        return this.height;
     }
 
     public int getHeight() {
         return height;
     }
 
-    public void withWidth(int width) {
-        this.width = width;
+    public int withWidth(String width) {
+        this.width = Integer.parseInt(width);;
+        return this.width;
     }
 
     public int getWidth() {
