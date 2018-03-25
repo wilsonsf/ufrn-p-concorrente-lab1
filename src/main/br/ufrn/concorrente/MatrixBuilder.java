@@ -1,13 +1,14 @@
 package br.ufrn.concorrente;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Wilson Farias
  */
 public class MatrixBuilder {
 
-    ArrayList<ArrayList<Integer> > lines = new ArrayList<>();
+    List<List<Integer>> lines = new ArrayList<>();
     private int height = 0;
     private int width = 0;
 
