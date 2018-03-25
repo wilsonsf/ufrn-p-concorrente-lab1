@@ -1,5 +1,7 @@
 package br.ufrn.concorrente;
 
+import br.ufrn.concorrente.exceptions.MatrixBuildException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,19 +10,20 @@ import java.util.List;
  */
 public class MatrixBuilder {
 
-    List<List<Integer>> lines = new ArrayList<>();
+    private List<List<Integer>> lines = new ArrayList<>();
     private int height = 0;
     private int width = 0;
 
-    public void withHeightAndWidth(String dimensionsString) {
+    public MatrixBuilder withHeightAndWidth(String dimensionsString) {
         String[] dimensions = dimensionsString.split(" ");
         if (dimensions.length == 2){
             withHeight(dimensions[0]);
             withWidth(dimensions[1]);
         }
+        return this;
     }
 
-    public int withHeight(String height) {
+    protected int withHeight(String height) {
         this.height = Integer.parseInt(height);
         return this.height;
     }
@@ -29,8 +32,8 @@ public class MatrixBuilder {
         return height;
     }
 
-    public int withWidth(String width) {
-        this.width = Integer.parseInt(width);;
+    protected int withWidth(String width) {
+        this.width = Integer.parseInt(width);
         return this.width;
     }
 
@@ -42,7 +45,7 @@ public class MatrixBuilder {
         return Integer.parseInt(elementString);
     }
 
-    protected ArrayList<Integer> readLine(String lineString) {
+    public List<Integer> readLine(String lineString) {
         ArrayList<Integer> line = new ArrayList<>();
 
         String[] elements = lineString.split(" ");
@@ -55,7 +58,7 @@ public class MatrixBuilder {
         return line;
     }
 
-    public Matrix build() throws Exception {
+    public Matrix build() throws MatrixBuildException {
         String validationErrors = "";
         if (width==0)
             validationErrors += "\nNão foi informada a largura.";
@@ -69,7 +72,7 @@ public class MatrixBuilder {
         if (validationErrors.isEmpty()) {
             return new Matrix(lines);
         } else {
-            throw new Exception(validationErrors);
+            throw new MatrixBuildException(validationErrors);
         }
     }
 }

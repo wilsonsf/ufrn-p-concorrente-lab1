@@ -1,10 +1,12 @@
 package br.ufrn.concorrente;
 
+import br.ufrn.concorrente.exceptions.MatrixBuildException;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
@@ -57,7 +59,7 @@ public class MatrixBuilderTest {
     public void shouldReadALine() {
         String lineString = "3 5 1";
 
-        ArrayList<Integer> elements = builder.readLine(lineString);
+        List<Integer> elements = builder.readLine(lineString);
 
         assertThat(elements, hasItems(3, 5, 1));
         assertThat(elements.get(0), is(equalTo(3)));
@@ -65,18 +67,18 @@ public class MatrixBuilderTest {
         assertThat(elements.get(2), is(equalTo(1)));
     }
 
-    @Test(expected = Exception.class)
-    public void shouldNotBuildWithoutHeight() throws Exception {
+    @Test(expected = MatrixBuildException.class)
+    public void shouldNotBuildWithoutHeight() throws MatrixBuildException {
         builder.build();
     }
 
-    @Test(expected = Exception.class)
-    public void shouldNotBuildWithoutWidth() throws Exception {
+    @Test(expected = MatrixBuildException.class)
+    public void shouldNotBuildWithoutWidth() throws MatrixBuildException {
         builder.build();
     }
 
-    @Test(expected = Exception.class)
-    public void shouldNotBuildWithoutReadingWholeMatrix() throws Exception {
+    @Test(expected = MatrixBuildException.class)
+    public void shouldNotBuildWithoutReadingWholeMatrix() throws MatrixBuildException {
         builder.withWidth("2");
         builder.withHeight("2");
         builder.readLine("1 1");
@@ -84,7 +86,7 @@ public class MatrixBuilderTest {
     }
 
     @Test
-    public void shouldBuildAMatrix() throws Exception {
+    public void shouldBuildAMatrix() throws MatrixBuildException {
         String dimensions = "2 2";
         String firstLine = "1 2";
         String secondLine = "3 4";
