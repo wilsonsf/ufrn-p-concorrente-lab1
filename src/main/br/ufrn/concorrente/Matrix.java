@@ -55,7 +55,7 @@ public class Matrix {
      * @param line número da linha da matriz, 0 a n-1
      * @return retorna uma lista com os elementos da linha solicitada.
      */
-    public List<Integer> getLine(int line) {
+    public List<Integer> getRow(int line) {
         return elementsMatrix.get(line);
     }
 
@@ -71,7 +71,6 @@ public class Matrix {
         for (List<Integer> row : elementsMatrix) {
             columnToBeReturned.add(row.get(column));
         }
-
         return columnToBeReturned;
     }
 

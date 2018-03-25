@@ -79,9 +79,9 @@ public class MatrixTest {
 
     @Test
     public void shouldReturnALine() {
-        assertThat(matrix.getLine(0), hasItems(1, 2, 3));
-        assertThat(matrix.getLine(1), hasItems(4, 5, 6));
-        assertThat(matrix.getLine(2), hasItems(7, 8, 9));
+        assertThat(matrix.getRow(0), hasItems(1, 2, 3));
+        assertThat(matrix.getRow(1), hasItems(4, 5, 6));
+        assertThat(matrix.getRow(2), hasItems(7, 8, 9));
     }
 
     @Test

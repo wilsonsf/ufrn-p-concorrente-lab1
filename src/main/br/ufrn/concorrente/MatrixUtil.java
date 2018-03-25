@@ -7,11 +7,11 @@ public class MatrixUtil {
     public static Matrix multiplySequential(Matrix A, Matrix B) {
 
         // Alocacao de ArrayList de ArrayList da matriz resultado
-        List<List<Integer>> resultElements = new ArrayList<List<Integer>>();
+        List<List<Integer>> resultElements = new ArrayList<>();
         for (int i = 0; i < A.getSide(); i++) {
-            resultElements.add(new ArrayList<Integer>());
+            resultElements.add(new ArrayList<>());
             for (int j = 0; j < A.getSide(); j++) {
-                resultElements.get(i).add(new Integer(0));
+                resultElements.get(i).add(0);
             }
         }
 
@@ -66,5 +66,21 @@ public class MatrixUtil {
         }
 
         return newRow;
+    }
+
+    /**
+     * Calcula o produto de duas matrizes A e B e retorna a matriz resultado.
+     * @param matrixA Uma matriz
+     * @param matrixB Outra matriz
+     * @return A matriz resultado do produto
+     */
+    public static Matrix calculateMatrixProduct(Matrix matrixA, Matrix matrixB) {
+        List<List<Integer>> gridResult = new ArrayList<>();
+
+        for (int i = 0; i < matrixA.getSide(); i++) {
+            gridResult.add(calculateARow(matrixA.getRow(i), matrixB));
+        }
+
+        return new Matrix(gridResult);
     }
 }
