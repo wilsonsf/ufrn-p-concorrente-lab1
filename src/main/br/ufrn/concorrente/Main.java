@@ -2,6 +2,7 @@ package br.ufrn.concorrente;
 
 import br.ufrn.concorrente.exceptions.MatrixBuildException;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
@@ -30,7 +31,7 @@ public class Main {
      * @param args ordem e algoritmo
      * @throws InterruptedException
      */
-    public static void main(final String[] args) throws InterruptedException {
+    public static void main(final String[] args) {
 
         if (args.length < 2) {
             System.err.println("ERROR: Not enough arguments to continue. Please insert two arguments.");
@@ -57,16 +58,13 @@ public class Main {
 
         if (multiplicationAlgorithm.equalsIgnoreCase("S")) {
             System.out.println("Algorithm to be used: sequential");
-
-            // FIXME: rotina sequencial
-            sequentialExecution();
-
         } else {
             System.out.println("Algorithm to be used: concurrent");
-
-            // FIXME: rotina concorrente
-            concurrentExecution();
         }
+        computeAndWriteMatrix(matrixA, matrixB);
+        generateStatisticsDataWithMatrix(matrixA, matrixB);
+
+        System.out.println("Done!");
     }
 
     /**
@@ -86,14 +84,6 @@ public class Main {
     }
 
     /**
-     * Realiza a rotina de cálculo do produto de matrizes sequencialmente.
-     */
-    private static void sequentialExecution() {
-        computeAndWriteMatrix(matrixA, matrixB);
-        generateStatisticsDataWithMatrix(matrixA, matrixB);
-    }
-
-    /**
      * Calcula o resultado da multiplicação e escreve no arquivo de saída
      * Cixi.txt, onde i é a dimensão da matriz.
      * @param matrixA uma matriz
@@ -102,11 +92,21 @@ public class Main {
     private static void computeAndWriteMatrix(final Matrix matrixA, final Matrix matrixB) {
         PrintStream matrixOutputStream = null;
         try {
-            matrixOutputStream = new PrintStream("out/"
+            File file = new File("out/"
                     + fileNameWith("C", matrixSide));
+            if (file.exists()){
+                return;
+            } else {
+                file.createNewFile();
+            }
+
             Matrix matrixC = MatrixUtil.multiplySequential(matrixA, matrixB);
+
+            matrixOutputStream = new PrintStream(file);
             matrixOutputStream.println(matrixC);
-        } catch (FileNotFoundException e) {
+
+        } catch (java.io.IOException e) {
+            e.printStackTrace();
             /*
              * Não lançará, a menos que não tenha permissão para escrever, nesse
              * caso foi triste.
@@ -127,20 +127,30 @@ public class Main {
      */
     private static void generateStatisticsDataWithMatrix(Matrix matrixA, Matrix matrixB) {
 
+        final double NANO_TO_SECONDS = 1000000000.0;
+
         Statistics statistics = new Statistics();
+
         for (int i = 0; i < NUMBER_OF_RUNS; i++) {
             long timeElapsed = computeElapsedTime(matrixA, matrixB);
+
+            if(i==0) {
+                System.out.printf("%d us\t", timeElapsed);
+                System.out.printf("%.4f s%n", timeElapsed/NANO_TO_SECONDS);
+            }
+
             statistics.addData(Double.valueOf(timeElapsed));
+            System.out.print(".");
         }
 
         PrintStream statisticsDataStreamStream = null;
         try {
-            statisticsDataStreamStream = new PrintStream("out/Statistics-" + multiplicationAlgorithm + "-"
-                    + fileNameWith("C", matrixSide));
+            statisticsDataStreamStream = new PrintStream("out/" + generateStatisticsFileName());
 
             statisticsDataStreamStream.println(statistics);
 
         } catch (FileNotFoundException e) {
+            e.printStackTrace();
             /*
              * Não lançará, a menos que não tenha permissão para escrever, nesse
              * caso foi triste.
@@ -168,7 +178,7 @@ public class Main {
             try {
                 concurrentExecution();
             } catch (InterruptedException e) {
-                /* FIXME: o que faz nessa situação? */
+                // FIXME: o que faz nessa situação?
             }
         }
         long endTime = System.nanoTime();
@@ -218,6 +228,11 @@ public class Main {
 
         scanner.close();
         return builder.build();
+    }
+
+    private static String generateStatisticsFileName() {
+        return "Statistics-" + multiplicationAlgorithm + "-"
+                + fileNameWith("C", matrixSide);
     }
 
     /**
