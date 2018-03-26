@@ -6,25 +6,33 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Uma classe que segue o padrão Builder para construção de matrizes a partir de
+ * String - da leitura do arquivo.
  * @author Wilson Farias
  */
-public class MatrixBuilder {
+public final class MatrixBuilder {
 
     private List<List<Integer>> lines = new ArrayList<>();
     private int height = 0;
     private int width = 0;
 
-    public MatrixBuilder withHeightAndWidth(String dimensionsString) {
+    /**
+     * Recebe uma string com os parâmetros de altura e largura no formato: "A L"
+     * , onde A é altura e L largura.
+     * @param dimensionsString string com parâmetros
+     * @return o próprio objeto builder
+     */
+    public MatrixBuilder withHeightAndWidth(final String dimensionsString) {
         String[] dimensions = dimensionsString.split(" ");
-        if (dimensions.length == 2){
+        if (dimensions.length == 2) {
             withHeight(dimensions[0]);
             withWidth(dimensions[1]);
         }
         return this;
     }
 
-    protected int withHeight(String height) {
-        this.height = Integer.parseInt(height);
+    protected int withHeight(final String newHeight) {
+        this.height = Integer.parseInt(newHeight);
         return this.height;
     }
 
@@ -32,8 +40,8 @@ public class MatrixBuilder {
         return height;
     }
 
-    protected int withWidth(String width) {
-        this.width = Integer.parseInt(width);
+    protected int withWidth(final String newWidth) {
+        this.width = Integer.parseInt(newWidth);
         return this.width;
     }
 
@@ -41,11 +49,11 @@ public class MatrixBuilder {
         return width;
     }
 
-    protected int readElement(String elementString) {
+    protected int readElement(final String elementString) {
         return Integer.parseInt(elementString);
     }
 
-    public List<Integer> readLine(String lineString) {
+    public List<Integer> readLine(final String lineString) {
         ArrayList<Integer> line = new ArrayList<>();
 
         String[] elements = lineString.split(" ");
@@ -58,15 +66,25 @@ public class MatrixBuilder {
         return line;
     }
 
+    /**
+     * Constrói a Matrix a partir dos dados armazenados na classe, fornecidos
+     * pelos outros métodos.
+     * @return uma Matrix
+     * @throws MatrixBuildException quando algum dado não foi fornecido
+     * corretamente
+     */
     public Matrix build() throws MatrixBuildException {
         String validationErrors = "";
-        if (width==0)
+        if (width == 0) {
             validationErrors += "\nNão foi informada a largura.";
-        if (height == 0)
+        }
+        if (height == 0) {
             validationErrors += "\nNão foi informada a altura.";
+        }
 
-        if (lines.size() != height)
+        if (lines.size() != height) {
             validationErrors += "\nNão foram lidas todas as linhas da matriz.";
+        }
 
 
         if (validationErrors.isEmpty()) {

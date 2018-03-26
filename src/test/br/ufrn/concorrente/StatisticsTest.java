@@ -1,8 +1,5 @@
 package br.ufrn.concorrente;
 
-import org.hamcrest.BaseMatcher;
-import org.hamcrest.CoreMatchers;
-import org.hamcrest.TypeSafeMatcher;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -57,7 +54,13 @@ public class StatisticsTest {
      */
     @Test
     public void shouldCalculateAverage() {
-        assertThat(statistics.getAverage(), is(equalTo(77.28125)));
+        assertThat(statistics.computeAverage(), is(equalTo(77.28125)));
+    }
+
+    @Test
+    public void shouldCalculateAverageWithoutData() {
+        statistics = new Statistics();
+        assertThat(statistics.computeAverage(), is(equalTo(0.0)));
     }
 
     /**
@@ -66,6 +69,25 @@ public class StatisticsTest {
      */
     @Test
     public void shuldCalculateStandardDeviation() {
-        org.junit.Assert.assertEquals(80.64032679, statistics.getStandardDeviation(), 0.001);
+        org.junit.Assert.assertEquals(80.64032679, statistics.computeStandardDeviation(), 0.001);
+    }
+
+    @Test
+    public void shouldCalculateStandardDeviationWithoutData() {
+        statistics = new Statistics();
+        assertThat(statistics.computeStandardDeviation(), is(equalTo(0.0)));
+    }
+
+    @Test
+    public void shouldConvertDataToReadableString() {
+        assertThat(statistics.dataToString(), is(equalTo("99.0; 10.0; 0.125; 200.0")));
+    }
+
+    @Test
+    public void shouldFormatToString() {
+        assertThat(statistics.toString(), is(equalTo(
+                "Dados: 99.0; 10.0; 0.125; 200.0\n" +
+                        "Média: 77.28125\n" +
+                        "Desvio: 80.64032678931491")));
     }
 }

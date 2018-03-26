@@ -15,10 +15,26 @@ public class Matrix {
     private List<List<Integer>> elementsMatrix;
 
     /**
+     * Construtor que inicializa uma matriz da ordem fornecida e inicializa seus
+     * elementos com 0 (zero).
+     * @param side a ordem da matriz
+     */
+    public Matrix(final Integer side) {
+        elementsMatrix = new ArrayList<>();
+        for (int i = 0; i < side; i++) {
+            List<Integer> row = new ArrayList<>();
+            for (int j = 0; j < side; j++) {
+                row.add(0);
+            }
+            elementsMatrix.add(row);
+        }
+    }
+
+    /**
      * Construtor da Matriz.
      * @param elements matriz de elementos do tipo Integer
      */
-    public Matrix(List<List<Integer>> elements) {
+    public Matrix(final List<List<Integer>> elements) {
         this.elementsMatrix = elements;
     }
 
@@ -36,7 +52,7 @@ public class Matrix {
      * @param line linha do elemento.
      * @return o elemento que está na posição (linha, coluna).
      */
-    public int getElement(int line, int column) {
+    public int getElement(final int line, final int column) {
         return elementsMatrix.get(line).get(column);
     }
 
@@ -46,7 +62,7 @@ public class Matrix {
      * @param column coluna do elemento a ser modificado
      * @param value novo valor do elemento na coordenada (linha, coluna)
      */
-    public void setElement(int line, int column, int value) {
+    public void setElement(final int line, final int column, final int value) {
         elementsMatrix.get(line).set(column, value);
     }
 
@@ -55,7 +71,7 @@ public class Matrix {
      * @param line número da linha da matriz, 0 a n-1
      * @return retorna uma lista com os elementos da linha solicitada.
      */
-    public List<Integer> getRow(int line) {
+    public List<Integer> getRow(final int line) {
         return elementsMatrix.get(line);
     }
 
@@ -64,7 +80,7 @@ public class Matrix {
      * @param column número da coluna da matriz, 0 a n-1
      * @return retorna uma lista com os elementos da coluna solicitada.
      */
-    public List<Integer> getColumn(int column) {
+    public List<Integer> getColumn(final int column) {
 
         ArrayList<Integer> columnToBeReturned = new ArrayList<>();
 
@@ -72,17 +88,6 @@ public class Matrix {
             columnToBeReturned.add(row.get(column));
         }
         return columnToBeReturned;
-    }
-
-    /**
-     * Retorna toda a matriz.
-     * @return retorna uma matriz dos elementos como uma Lista de uma Lista de Inteiros
-     * @deprecated dá um acesso externo aos dados matriz sem copiá-los
-     */
-    @SuppressWarnings("unused")
-    @Deprecated(since = "2018/03/25")
-    public List<List<Integer>> getAllElements() {
-        return elementsMatrix;
     }
 
     /**
@@ -97,17 +102,8 @@ public class Matrix {
                 builder.append(element);
                 builder.append(" ");
             }
-            builder.setCharAt(builder.length()-1, '\n');
+            builder.setCharAt(builder.length() - 1, '\n');
         }
         return builder.toString();
-    }
-
-    /**
-     * Imprime a matriz atual na saída padrão do sistema (System.out).
-     * @deprecated forRemoval
-     */
-    @Deprecated(since = "2018/03/24", forRemoval = true)
-    public void print() {
-        System.out.println(toString());
     }
 }
