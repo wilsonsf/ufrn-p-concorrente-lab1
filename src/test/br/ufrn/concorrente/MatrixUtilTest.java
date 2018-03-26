@@ -152,10 +152,6 @@ public class MatrixUtilTest {
     public void shouldCalculateAMatrixProduct() {
         Matrix matrix = MatrixUtil.calculateMatrixProduct(matrixB, matrixA);
 
-        System.out.println(matrixB);
-        System.out.println(matrixA);
-        System.out.println(matrix);
-
         assertThat(matrix.getRow(0), hasItems(12, 15, 18));
         assertThat(matrix.getRow(1), hasItems(24, 30, 36));
         assertThat(matrix.getRow(2), hasItems(36, 45, 54));

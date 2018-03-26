@@ -4,6 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MatrixUtil {
+
+    /**
+     * Algoritmo sequencial para multiplicação de matrizes.
+     * @param A uma matriz
+     * @param B outra matriz
+     * @return a matriz resultado do produto
+     */
     public static Matrix multiplySequential(Matrix A, Matrix B) {
 
         // Alocacao de ArrayList de ArrayList da matriz resultado

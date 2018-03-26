@@ -77,8 +77,10 @@ public class Matrix {
     /**
      * Retorna toda a matriz.
      * @return retorna uma matriz dos elementos como uma Lista de uma Lista de Inteiros
+     * @deprecated dá um acesso externo aos dados matriz sem copiá-los
      */
     @SuppressWarnings("unused")
+    @Deprecated(since = "2018/03/25")
     public List<List<Integer>> getAllElements() {
         return elementsMatrix;
     }
