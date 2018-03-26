@@ -14,10 +14,23 @@ public class Main {
 
     private static int matrixSide;
     private static String multiplicationAlgorithm;
-    private static PrintStream statisticsDataStreamStream;
-    private static PrintStream matrixOutputStream;
+    private static Matrix matrixA;
+    private static Matrix matrixB;
+    private static final int NUMBER_OF_RUNS = 20;
+    private static Matrix matrixC;
 
-    public static void main(String[] args) {
+    /**
+     * Método principal do projeto que espera 2 argumentos:
+     * <ul>
+     * <li>O primeiro representa a ordem (tamanho) da matriz, apenas potências de
+     * 2 estão disponíveis a até 2048.</li>
+     * <li>O segundo representa a estratégia do algoritmo, S ou C, para Sequencial
+     * e Concorrente, respectivamente.</li>
+     * </ul>
+     * @param args ordem e algoritmo
+     * @throws InterruptedException
+     */
+    public static void main(final String[] args) throws InterruptedException {
 
         if (args.length < 2) {
             System.err.println("ERROR: Not enough arguments to continue. Please insert two arguments.");
@@ -32,58 +45,52 @@ public class Main {
         }
         multiplicationAlgorithm = args[1];
 
-        // Impressao das informacoes sobre os argumentos passados por linha de comando
-        System.out.println("Matrix side: " + matrixSide);
-
-        if (multiplicationAlgorithm.equalsIgnoreCase("S")) {
-            System.out.println("Algorithm to be used: sequential");
-        } else if (multiplicationAlgorithm.equalsIgnoreCase("C")) {
-            System.out.println("Algorithm to be used: concurrent");
-        } else {
+        if (!multiplicationAlgorithm.equalsIgnoreCase("S")
+                && !multiplicationAlgorithm.equalsIgnoreCase("C")) {
             System.err.println("ERROR: The input for the algorithm is invalid. Please input 'S' for sequential or 'C' for concurrent.");
             return;
         }
 
-        Matrix matrixA;
-        Matrix matrixB;
+        if (!readMatricesFromFiles()) {
+            return;
+        }
+
+        if (multiplicationAlgorithm.equalsIgnoreCase("S")) {
+            System.out.println("Algorithm to be used: sequential");
+
+            // FIXME: rotina sequencial
+            sequentialExecution();
+
+        } else {
+            System.out.println("Algorithm to be used: concurrent");
+
+            // FIXME: rotina concorrente
+            concurrentExecution();
+        }
+    }
+
+    /**
+     * Realiza a leitura das matrizes a partir dos arquivos no formato definido
+     * ?ixi.txt, onde ? será A ou B, e i, será substituido pela ordem da matriz.
+     * @return se a leitura ocorreu corretamente
+     */
+    private static boolean readMatricesFromFiles() {
         try {
             matrixA = readMatrixWithSide("A", matrixSide);
             matrixB = readMatrixWithSide("B", matrixSide);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+        } catch (FileNotFoundException | MatrixBuildException e) {
             System.err.println(e.getLocalizedMessage());
-            return;
-        } catch (MatrixBuildException e) {
-            System.err.println(e.getLocalizedMessage());
-            return;
+            return false;
         }
-
-        calculateAndWriteMatrix(matrixA, matrixB);
-
-        generateStatisticsDataWithMatrix(matrixA, matrixB);
+        return true;
     }
 
-    private static void generateStatisticsDataWithMatrix(Matrix matrixA, Matrix matrixB) {
-
-        Statistics statistics = new Statistics();
-        for (int i = 0; i < 20; i++) {
-            long timeElapsed = calculateElapsedTimeUsingReferenceAccess(matrixA, matrixB);
-            statistics.addData(Double.valueOf(timeElapsed));
-        }
-
-        statisticsDataStreamStream = null;
-        try {
-            statisticsDataStreamStream = new PrintStream("out/Statistics-" + multiplicationAlgorithm + "-"
-                    + fileNameWith("C", matrixSide));
-
-            statisticsDataStreamStream.println(statistics);
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            return;
-        } finally {
-            statisticsDataStreamStream.close();
-        }
+    /**
+     * Realiza a rotina de cálculo do produto de matrizes sequencialmente.
+     */
+    private static void sequentialExecution() {
+        computeAndWriteMatrix(matrixA, matrixB);
+        generateStatisticsDataWithMatrix(matrixA, matrixB);
     }
 
     /**
@@ -92,52 +99,120 @@ public class Main {
      * @param matrixA uma matriz
      * @param matrixB outra matriz
      */
-    private static void calculateAndWriteMatrix(Matrix matrixA, Matrix matrixB) {
-        matrixOutputStream = null;
+    private static void computeAndWriteMatrix(final Matrix matrixA, final Matrix matrixB) {
+        PrintStream matrixOutputStream = null;
         try {
-            matrixOutputStream = new PrintStream("out/" + fileNameWith("C", matrixSide));
+            matrixOutputStream = new PrintStream("out/"
+                    + fileNameWith("C", matrixSide));
             Matrix matrixC = MatrixUtil.multiplySequential(matrixA, matrixB);
             matrixOutputStream.println(matrixC);
         } catch (FileNotFoundException e) {
-            // Nunca vai acontecer, vai criar o arquivo
-            e.printStackTrace();
+            /*
+             * Não lançará, a menos que não tenha permissão para escrever, nesse
+             * caso foi triste.
+             */
         } finally {
-            matrixOutputStream.close();
+            if (matrixOutputStream != null) {
+                matrixOutputStream.close();
+            }
         }
     }
 
     /**
-     * Calcula o tempo de execução da multiplicação de duas matrizes fornecidas.
+     * Gera os dados estatísticos para as matrizes fornecidas e armazena em
+     * arquivo no formato <i>"Statistics-?-Cixi.txt"</i>, onde o <b>?</b> pode ser S ou C
+     * conforme estratégia e o <b>i</b> é substituído pela ordem da matriz.
+     * @param matrixA uma matriz
+     * @param matrixB outra matriz
+     */
+    private static void generateStatisticsDataWithMatrix(Matrix matrixA, Matrix matrixB) {
+
+        Statistics statistics = new Statistics();
+        for (int i = 0; i < NUMBER_OF_RUNS; i++) {
+            long timeElapsed = computeElapsedTime(matrixA, matrixB);
+            statistics.addData(Double.valueOf(timeElapsed));
+        }
+
+        PrintStream statisticsDataStreamStream = null;
+        try {
+            statisticsDataStreamStream = new PrintStream("out/Statistics-" + multiplicationAlgorithm + "-"
+                    + fileNameWith("C", matrixSide));
+
+            statisticsDataStreamStream.println(statistics);
+
+        } catch (FileNotFoundException e) {
+            /*
+             * Não lançará, a menos que não tenha permissão para escrever, nesse
+             * caso foi triste.
+             */
+        } finally {
+            if (statisticsDataStreamStream != null) {
+                statisticsDataStreamStream.close();
+            }
+        }
+    }
+
+    /**
+     * Calcula o tempo de execução da multiplicação de duas matrizes fornecidas
+     * e retorna o tempo de execução em nanossegundos.
      * @param matrixA uma matriz
      * @param matrixB outra matriz
      * @return o tempo de execução em nanosegundos
      */
-    private static long calculateElapsedTimeUsingReferenceAccess(Matrix matrixA, Matrix matrixB) {
+    private static long computeElapsedTime(Matrix matrixA, Matrix matrixB) {
         long initTime = System.nanoTime();
-        MatrixUtil.calculateMatrixProduct(matrixA, matrixB);
+
+        if (multiplicationAlgorithm.equalsIgnoreCase("S")) {
+            MatrixUtil.calculateMatrixProduct(matrixA, matrixB);
+        } else {
+            try {
+                concurrentExecution();
+            } catch (InterruptedException e) {
+                /* FIXME: o que faz nessa situação? */
+            }
+        }
         long endTime = System.nanoTime();
-        System.out.println("Sequencial - Using reference access:\t" + (endTime-initTime) + " us\t" +
-                (endTime-initTime)/1000000000 + " s");
-        return endTime-initTime;
+        return endTime - initTime;
+    }
+
+    /**
+     * Realiza a rotina de cálculo de matriz com uso de concorrência.
+     * @throws InterruptedException caso a thread seja interrompida durante a
+     * espera pode lançar essa exceção
+     */
+    private static void concurrentExecution() throws InterruptedException {
+        matrixC = new Matrix(matrixSide);
+        for (int i = 0; i < matrixSide; i++) {
+            for (int j = 0; j < matrixSide; j++) {
+                ThreadElement thread = new ThreadElement(
+                        String.format("(%d, %d)", i, j),
+                        matrixA, matrixB, matrixC, i, j);
+                thread.start();
+
+                thread.join();
+            }
+        }
     }
 
     /**
      * Realiza a leitura do arquivo de matriz da dimensão fornecida.
      * @param side A dimensão da matriz.
-     * @return
-     * @throws FileNotFoundException
-     * @throws MatrixBuildException
+     * @return uma matriz a partir do arquivo
+     * @throws MatrixBuildException caso o arquivo não possua todos os dados da
+     * matriz
+     * @throws FileNotFoundException caso o arquivo não exista
      */
-    private static Matrix readMatrixWithSide(String name, int side) throws MatrixBuildException, FileNotFoundException {
+    private static Matrix readMatrixWithSide(final String name, final int side) throws MatrixBuildException, FileNotFoundException {
         MatrixBuilder builder = new MatrixBuilder();
         Scanner scanner;
 
         scanner = new Scanner(new FileInputStream("resources/" + fileNameWith(name, side)));
 
-        if (scanner.hasNextLine())
+        if (scanner.hasNextLine()) {
             builder.withHeightAndWidth(scanner.nextLine());
+        }
 
-        while(scanner.hasNextLine()) {
+        while (scanner.hasNextLine()) {
             builder.readLine(scanner.nextLine());
         }
 
@@ -152,7 +227,7 @@ public class Main {
      * @param side a dimensão da matriz
      * @return o caminho do arquivo para leitura
      */
-    private static String fileNameWith(String letter, int side) {
+    private static String fileNameWith(final String letter, final int side) {
         return letter + side + "x" + side + ".txt";
     }
 }

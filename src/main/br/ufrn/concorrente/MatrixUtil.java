@@ -3,41 +3,52 @@ package br.ufrn.concorrente;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MatrixUtil {
+/**
+ * Uma classe utilitária que auxilia no cálculo do produto de matrizes.
+ * @author Wilson Farias
+ */
+public final class MatrixUtil {
+
+    /**
+     * Escondendo o construtor da classe utilitária.
+     */
+    private MatrixUtil() { }
 
     /**
      * Algoritmo sequencial para multiplicação de matrizes.
-     * @param A uma matriz
-     * @param B outra matriz
+     * @param matrixA uma matriz
+     * @param matrixB outra matriz
      * @return a matriz resultado do produto
      */
-    public static Matrix multiplySequential(Matrix A, Matrix B) {
+    public static Matrix multiplySequential(final Matrix matrixA,
+                                            final Matrix matrixB) {
 
         // Alocacao de ArrayList de ArrayList da matriz resultado
         List<List<Integer>> resultElements = new ArrayList<>();
-        for (int i = 0; i < A.getSide(); i++) {
+        for (int i = 0; i < matrixA.getSide(); i++) {
             resultElements.add(new ArrayList<>());
-            for (int j = 0; j < A.getSide(); j++) {
+            for (int j = 0; j < matrixA.getSide(); j++) {
                 resultElements.get(i).add(0);
             }
         }
 
         Matrix resultMatrix = new Matrix(resultElements);
 
-        // ==================== Comeco da multiplicação da matriz ====================
+        // ================= Comeco da multiplicação da matriz =================
         for (int i = 0; i < resultMatrix.getSide(); i++) {
             for (int j = 0; j < resultMatrix.getSide(); j++) {
                 int resultado = 0;
 
                 for (int k = 0; k < resultMatrix.getSide(); k++) {
-                    resultado += A.getElement(i, k) * B.getElement(k, j);
+                    resultado += matrixA.getElement(i, k)
+                            * matrixB.getElement(k, j);
                 }
 
                 resultMatrix.setElement(i, j, resultado);
             }
         }
 
-        // ====================== Fim da multiplicação da matriz ======================
+        // ================= Fim da multiplicação da matriz =================
 
         return resultMatrix;
     }
@@ -49,9 +60,10 @@ public class MatrixUtil {
      * @param column uma coluna.
      * @return o produto entre a fileira e a coluna.
      */
-    protected static Integer calculateAnElement(List<Integer> row, List<Integer> column) {
+    protected static Integer calculateAnElement(final List<Integer> row,
+                                                final List<Integer> column) {
         int sum = 0;
-        for (int i = 0; i < row.size() ; i++) {
+        for (int i = 0; i < row.size(); i++) {
             sum += row.get(i) * column.get(i);
         }
         return sum;
@@ -64,7 +76,8 @@ public class MatrixUtil {
      * @param matrix uma matriz.
      * @return uma fileira resultado do produto de matrizes.
      */
-    public static List<Integer> calculateARow(List<Integer> row, Matrix matrix) {
+    public static List<Integer> calculateARow(final List<Integer> row,
+                                              final Matrix matrix) {
         List<Integer> newRow = new ArrayList<>();
 
         for (int i = 0; i < matrix.getSide(); i++) {
@@ -81,7 +94,8 @@ public class MatrixUtil {
      * @param matrixB Outra matriz
      * @return A matriz resultado do produto
      */
-    public static Matrix calculateMatrixProduct(Matrix matrixA, Matrix matrixB) {
+    public static Matrix calculateMatrixProduct(final Matrix matrixA,
+                                                final Matrix matrixB) {
         List<List<Integer>> gridResult = new ArrayList<>();
 
         for (int i = 0; i < matrixA.getSide(); i++) {
