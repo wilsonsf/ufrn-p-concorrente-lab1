@@ -75,17 +75,6 @@ public class Matrix {
     }
 
     /**
-     * Retorna toda a matriz.
-     * @return retorna uma matriz dos elementos como uma Lista de uma Lista de Inteiros
-     * @deprecated dá um acesso externo aos dados matriz sem copiá-los
-     */
-    @SuppressWarnings("unused")
-    @Deprecated(since = "2018/03/25")
-    public List<List<Integer>> getAllElements() {
-        return elementsMatrix;
-    }
-
-    /**
      * Retorna uma Matriz imprimível como uma String.
      * @return uma String representando o estado atual da matriz
      */
@@ -100,14 +89,5 @@ public class Matrix {
             builder.setCharAt(builder.length()-1, '\n');
         }
         return builder.toString();
-    }
-
-    /**
-     * Imprime a matriz atual na saída padrão do sistema (System.out).
-     * @deprecated forRemoval
-     */
-    @Deprecated(since = "2018/03/24", forRemoval = true)
-    public void print() {
-        System.out.println(toString());
     }
 }

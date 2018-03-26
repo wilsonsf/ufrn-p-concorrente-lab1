@@ -2,6 +2,7 @@ package br.ufrn.concorrente;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 
 public class Statistics {
 
@@ -59,7 +60,7 @@ public class Statistics {
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("Dados: ")
-                .append(data)
+                .append(dataToString())
                 .append('\n')
                 .append("Média: ")
                 .append(getAverage())
@@ -68,6 +69,21 @@ public class Statistics {
                 .append(getStandardDeviation());
 
 
+        return builder.toString();
+    }
+
+    protected String dataToString() {
+        StringBuilder builder = new StringBuilder();
+
+        Iterator<Double> iterator = data.iterator();
+
+        while(iterator.hasNext()) {
+            builder.append(iterator.next());
+
+            if (iterator.hasNext()) {
+                builder.append("; ");
+            }
+        }
         return builder.toString();
     }
 }

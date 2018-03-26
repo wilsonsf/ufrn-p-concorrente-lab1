@@ -60,6 +60,12 @@ public class StatisticsTest {
         assertThat(statistics.getAverage(), is(equalTo(77.28125)));
     }
 
+    @Test
+    public void shouldCalculateAverageWithoutData() {
+        statistics = new Statistics();
+        assertThat(statistics.getAverage(), is(equalTo(0.0)));
+    }
+
     /**
      * Garante a corretude do cálculo do desvio padrão.
      * std = sqrt ( 1/n sum[1,n] ( (i - avg)^2 ) )
@@ -67,5 +73,24 @@ public class StatisticsTest {
     @Test
     public void shuldCalculateStandardDeviation() {
         org.junit.Assert.assertEquals(80.64032679, statistics.getStandardDeviation(), 0.001);
+    }
+
+    @Test
+    public void shouldCalculateStandardDeviationWithoutData() {
+        statistics = new Statistics();
+        assertThat(statistics.getStandardDeviation(), is(equalTo(0.0)));
+    }
+
+    @Test
+    public void shouldConvertDataToReadableString() {
+        assertThat(statistics.dataToString(), is(equalTo("99.0; 10.0; 0.125; 200.0")));
+    }
+
+    @Test
+    public void shouldFormatToString() {
+        assertThat(statistics.toString(), is(equalTo(
+                "Dados: 99.0; 10.0; 0.125; 200.0\n" +
+                        "Média: 77.28125\n" +
+                        "Desvio: 80.64032678931491")));
     }
 }
