@@ -1,10 +1,15 @@
 package br.ufrn.concorrente;
 
-import org.hamcrest.CoreMatchers;
+import br.ufrn.concorrente.exceptions.MatrixBuildException;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.assertThat;
 
 public class MatrixBuilderTest {
 
@@ -17,28 +22,80 @@ public class MatrixBuilderTest {
 
     @Test
     public void shouldReadAHeight() {
-        builder.withHeight(5);
-        assertThat(builder.getHeight(), CoreMatchers.is(CoreMatchers.equalTo(5)));
+        String dimensionString = "5";
+        int height = builder.withHeight(dimensionString);
+        assertThat(height, is(equalTo(5)));
+        assertThat(builder.getHeight(), is(equalTo(5)));
     }
 
     @Test
     public void shouldReadAnWidth() {
-        builder.withWidth(5);
-        assertThat(builder.getWidth(), CoreMatchers.is(CoreMatchers.equalTo(5)));
+        String dimensionString = "5";
+        int width = builder.withWidth(dimensionString);
+        assertThat(width, is(equalTo(5)));
+        assertThat(builder.getWidth(), is(equalTo(5)));
+    }
+
+    @Test
+    public void shouldReadHeightAndWidth() {
+        String dimensionsString = "3 3";
+        builder.withHeightAndWidth(dimensionsString);
+
+        assertThat(builder.getHeight(), is(equalTo(3)));
+        assertThat(builder.getWidth(), is(equalTo(3)));
     }
 
     @Test
     public void shouldReadAnElement() {
         String elementString = "5";
         int currentElement = builder.readElement(elementString);
-        assertThat(currentElement, CoreMatchers.is(CoreMatchers.equalTo(5)));
+        assertThat(currentElement, is(equalTo(5)));
     }
 
+    /**
+     * Tem que garantir a presença dos elementos e a ordem correta
+     */
     @Test
     public void shouldReadALine() {
         String lineString = "3 5 1";
-        int elements[] = builder.readLine(lineString);
-        assertThat(elements[0], CoreMatchers.is(CoreMatchers.equalTo(3)));
-        //assertThat(elements[0], CoreMatchers.allOf(CoreMatchers.hasItems(3, 5, 1)));
+
+        List<Integer> elements = builder.readLine(lineString);
+
+        assertThat(elements, hasItems(3, 5, 1));
+        assertThat(elements.get(0), is(equalTo(3)));
+        assertThat(elements.get(1), is(equalTo(5)));
+        assertThat(elements.get(2), is(equalTo(1)));
+    }
+
+    @Test(expected = MatrixBuildException.class)
+    public void shouldNotBuildWithoutHeight() throws MatrixBuildException {
+        builder.build();
+    }
+
+    @Test(expected = MatrixBuildException.class)
+    public void shouldNotBuildWithoutWidth() throws MatrixBuildException {
+        builder.build();
+    }
+
+    @Test(expected = MatrixBuildException.class)
+    public void shouldNotBuildWithoutReadingWholeMatrix() throws MatrixBuildException {
+        builder.withWidth("2");
+        builder.withHeight("2");
+        builder.readLine("1 1");
+        builder.build();
+    }
+
+    @Test
+    public void shouldBuildAMatrix() throws MatrixBuildException {
+        String dimensions = "2 2";
+        String firstLine = "1 2";
+        String secondLine = "3 4";
+
+        builder.withHeightAndWidth(dimensions);
+        builder.readLine(firstLine);
+        builder.readLine(secondLine);
+
+        Matrix matrix = builder.build();
+        assertThat(matrix, is(not(nullValue())));
     }
 }
