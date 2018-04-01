@@ -100,6 +100,88 @@ public class MatrixUtilTest {
     }
 
     /**
+     * Calcula o valor de um elemento da matriz, fornecidos linha e coluna.
+     * Matriz A:
+     * 1 2 3
+     * 4 5 6
+     * 7 8 9
+     *
+     * Matriz B:
+     * 1 1 1
+     * 2 2 2
+     * 3 3 3
+     *
+     * 1x1 + 2x2 + 3x3 = 14
+     * 4x1 + 5x2 + 6x3 = 4 + 10 + 18 = 32
+     */
+    @Test
+    public void shouldCalculateAnElementMM() {
+        Integer element = MatrixUtil.calculateAnElement(matrixA, matrixB, 0, 0);
+        Integer otherElement = MatrixUtil.calculateAnElement(matrixA, matrixB, 1, 1);
+        assertThat(element, is(equalTo(14)));
+        assertThat(otherElement, is(equalTo(32)));
+    }
+
+    /**
+     * Garante a corretude do cálculo dos valores de uma linha do produto
+     * de matrizes.
+     * Matriz B:
+     * 1 1 1
+     * 2 2 2
+     * 3 3 3
+     *
+     * Matriz A:
+     * 1 2 3
+     * 4 5 6
+     * 7 8 9
+     *
+     * Matriz C (B x A)
+     *  x  x  x
+     * 24 30 36
+     *  x  x  x
+     */
+    @Test
+    public void shouldCalculateAnRowMM() {
+        Matrix resultMatrix = new Matrix(3);
+        MatrixUtil.calculateARow(matrixB, matrixA, 1, resultMatrix);
+
+        assertThat(resultMatrix.getRow(1), hasItems(24, 30, 36));
+    }
+
+    /**
+     * Garante a corretude no produto da matriz B (3x3) pela matriz A (3x3),
+     * resultando em uma nova matriz (3x3).
+     *   B            A
+     * 1 1 1        1 2 3
+     * 2 2 2    x   4 5 6
+     * 3 3 3        7 8 9
+     *
+     * 1 + 4 + 7 = 12
+     * 2 + 5 + 8 = 15
+     * 3 + 6 + 9 = 18
+     *
+     *  2 +  8 + 14 = 24
+     *  4 + 10 + 16 = 30
+     *  6 + 12 + 18 = 36
+     *
+     *  3 + 12 + 21 = 36
+     *  6 + 15 + 24 = 45
+     *  9 + 18 + 27 = 54
+     *
+     *  12 15 18
+     *  24 30 36
+     *  36 45 54
+     */
+    @Test
+    public void shouldCalculateMatrixProduct() {
+        Matrix product = MatrixUtil.calculateMatrixProduct(matrixB, matrixA);
+
+        assertThat(product.getRow(0), hasItems(12, 15, 18));
+        assertThat(product.getRow(1), hasItems(24, 30, 36));
+        assertThat(product.getRow(2), hasItems(36, 45, 54));
+    }
+
+    /**
      * Garante a corretude no calculo do produto de uma fileira de matriz (1x3)
      * por uma matriz (3x3).
      *

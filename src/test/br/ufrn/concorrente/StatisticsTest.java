@@ -86,7 +86,9 @@ public class StatisticsTest {
     @Test
     public void shouldFormatToString() {
         assertThat(statistics.toString(), is(equalTo(
-                "Dados: 99.0; 10.0; 0.125; 200.0\n" +
+                "Dados: \n99.0; 10.0; 0.125; 200.0\n" +
+                        "Máximo: 200.0\n" +
+                        "Mínimo: 0.125\n" +
                         "Média: 77.28125\n" +
                         "Desvio: 80.64032678931491")));
     }

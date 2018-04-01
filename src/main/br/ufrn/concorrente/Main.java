@@ -191,6 +191,26 @@ public class Main {
      * espera pode lançar essa exceção
      */
     private static void concurrentExecution() throws InterruptedException {
+//        concurrentImplementationByElement();
+        concurrentImplementationByRow();
+    }
+
+    private static void concurrentImplementationByRow() throws InterruptedException {
+        matrixC = new Matrix(matrixSide);
+        for (int row = 0; row < matrixSide; row++) {
+            ThreadRow thread = new ThreadRow(
+                    String.format("Row: %d", row),
+                    matrixA,
+                    matrixB,
+                    matrixC,
+                    row);
+                thread.start();
+
+                thread.join();
+        }
+    }
+
+    private static void concurrentImplementationByElement() throws InterruptedException {
         matrixC = new Matrix(matrixSide);
         for (int i = 0; i < matrixSide; i++) {
             for (int j = 0; j < matrixSide; j++) {
